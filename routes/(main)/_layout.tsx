@@ -6,7 +6,7 @@ export default defineLayout((_req, { Component }) => {
   return (
     <div class='py-5'>
       <Navbar />
-      <main class='max-w-5xl mx-auto px-5'>
+      <main class='max-w-4xl mx-auto px-5'>
         <Component />
       </main>
       <Footer />
