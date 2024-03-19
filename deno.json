@@ -41,7 +41,8 @@
     "tailwindcss": "npm:tailwindcss@3.4.1",
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
-    "$std/": "https://deno.land/std@0.211.0/"
+    "$std/": "https://deno.land/std@0.211.0/",
+    "components/": "./components/"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
