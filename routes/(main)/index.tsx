@@ -1,6 +1,6 @@
 import { type Handlers, type PageProps } from '$fresh/server.ts'
 import { Clipboard, Scissor } from 'components/icons.tsx'
-import { getUserUrls, shortenUrl } from 'lib/db.ts'
+import { shortenUrl } from 'lib/db.ts'
 
 type Props = { urlId: string | null }
 
