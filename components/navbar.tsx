@@ -1,4 +1,8 @@
-export function Navbar() {
+import { UserDropdown } from 'components/user-dropdown.tsx'
+import { type User } from 'lib/db.ts'
+
+export function Navbar({ user }: { user?: User }) {
+  const isLoggedIn = user !== undefined
   return (
     <header class='flex justify-center'>
       <nav class='fixed w-full flex items-center justify-between max-w-4xl px-5'>
@@ -9,9 +13,18 @@ export function Navbar() {
         >
           trimz.
         </a>
-        <a class='font-bold text-lg text-black' href='/sign-in'>
-          Sign in
-        </a>
+        {isLoggedIn
+          ? (
+            <UserDropdown
+              username={user.login}
+              userImageSrc={user.avatar_url}
+            />
+          )
+          : (
+            <a class='font-bold text-lg text-black' href='/sign-in'>
+              Sign in
+            </a>
+          )}
       </nav>
     </header>
   )

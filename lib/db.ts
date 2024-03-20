@@ -54,3 +54,45 @@ export async function getUserUrls(username: string) {
   }
   return urls
 }
+
+export type User = {
+  login: string
+  avatar_url: string
+  name: string
+  id: number
+  sessionId: string
+}
+
+export async function createOrUpdateUser(user: User) {
+  const byUserIdKey = ['users', 'github', user.id]
+  const bySessionIdKey = ['users', 'github', user.sessionId]
+
+  const res = await kv.atomic()
+    .set(byUserIdKey, user)
+    .set(bySessionIdKey, user)
+    .commit()
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to create or update user ${user.login} with ID: ${user.id}`,
+    )
+  }
+}
+
+export async function getUser(
+  options: { by: 'userId'; userId: number } | {
+    by: 'sessionId'
+    sessionId: string
+  },
+) {
+  const user = await kv.get<User>([
+    'users',
+    'github',
+    options.by === 'userId' ? options.userId : options.sessionId,
+  ])
+  return user.value
+}
+
+export async function deleteUserBySessionId(sessionId: string) {
+  await kv.delete(['users', 'github', sessionId])
+}

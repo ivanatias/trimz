@@ -42,6 +42,7 @@
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
     "$std/": "https://deno.land/std@0.211.0/",
+    "kv_oauth": "https://deno.land/x/deno_kv_oauth@v0.10.0/mod.ts",
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/mod.ts",
     "components/": "./components/",
     "lib/": "./lib/"
