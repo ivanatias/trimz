@@ -38,6 +38,8 @@ export default function Home({ data }: PageProps<Props>) {
               type='text'
               placeholder='https://www.example.com'
               name='url'
+              pattern='[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?'
+              required
             />
           </div>
           <button class='flex items-center justify-center gap-2 text-black text-sm w-full sm:w-fit font-semibold border border-emerald-200 bg-emerald-50 p-2 rounded-tr-md hover:bg-emerald-100 transition-colors focus:outline-emerald-300'>
