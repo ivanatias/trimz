@@ -32,12 +32,16 @@ export async function shortenUrl(
   const threeDaysMs = 3 * 24 * 60 * 60 * 1000
   const expireIn = username === 'guest' ? threeDaysMs : undefined
 
-  await Promise.all([
-    kv.set(byOriginalUrlKey, toCreate, {
-      expireIn,
-    }),
-    kv.set(byIdKey, byOriginalUrlKey, { expireIn }),
-  ])
+  const res = await kv.atomic()
+    .set(byOriginalUrlKey, toCreate, { expireIn })
+    .set(byIdKey, byOriginalUrlKey, { expireIn })
+    .commit()
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to shorten URL ${originalUrl} for user ${username}`,
+    )
+  }
 
   console.info(
     `URL ${originalUrl} for user ${username} did not exist. Created it.`,
