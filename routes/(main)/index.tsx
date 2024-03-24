@@ -1,6 +1,7 @@
 import { type Handlers, type PageProps } from '$fresh/server.ts'
 import { Clipboard, Scissor } from 'components/icons.tsx'
 import { shortenUrl } from 'lib/db.ts'
+import { BASE_URL } from 'consts/urls.ts'
 
 type Props = { urlId: string | null }
 
@@ -56,7 +57,7 @@ export default function Home({ data }: PageProps<Props>) {
             <div class='space-y-2'>
               <div class='flex items-center justify-between p-4 rounded-md bg-gradient-to-r from-orange-200 via-rose-200 to-emerald-100'>
                 <p class='text-sm text-gray-900 mb-1'>
-                  trimz.dev/{urlId}
+                  {BASE_URL}/{urlId}
                 </p>
                 <button
                   aria-label='Copy URL to clipboard'
