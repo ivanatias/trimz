@@ -8,22 +8,19 @@ const PROVIDERS = [
   {
     name: 'GitHub',
     href: '/sign-in/github',
-    className:
-      'bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-[#24292F]/50 dark:focus:ring-gray-500 dark:hover:bg-[#050708]/30',
+    className: 'bg-[#24292F] hover:bg-neutral-600 focus:ring-[#24292F]/50',
     icon: <GitHub />,
   },
   {
     name: 'Google',
     href: '/sign-in/google',
-    className:
-      'bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-[#4285F4]/50 dark:focus:ring-[#4285F4]/55',
+    className: 'bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-[#4285F4]/50',
     icon: <Google />,
   },
   {
     name: 'Facebook',
     href: '/sign-in/facebook',
-    className:
-      'bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-[#3b5998]/50 dark:focus:ring-[#3b5998]/55',
+    className: 'bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-[#3b5998]/50',
     icon: <Facebook />,
   },
 ]
