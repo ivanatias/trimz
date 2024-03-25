@@ -1,4 +1,5 @@
 import { UserDropdown } from 'components/user-dropdown.tsx'
+import { LoginDropdown } from 'components/login-dropdown.tsx'
 import { type User } from 'lib/db.ts'
 
 export function Navbar({ user }: { user?: User }) {
@@ -20,11 +21,7 @@ export function Navbar({ user }: { user?: User }) {
               userImageSrc={user.avatar_url}
             />
           )
-          : (
-            <a class='font-bold text-lg text-black' href='/sign-in'>
-              Sign in
-            </a>
-          )}
+          : <LoginDropdown />}
       </nav>
     </header>
   )
