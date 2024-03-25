@@ -1,18 +1,21 @@
 import { type Handlers, type PageProps } from '$fresh/server.ts'
 import { Clipboard, Scissor } from 'components/icons.tsx'
-import { shortenUrl } from 'lib/db.ts'
+import { shortenUrl, type User } from 'lib/db.ts'
 import { BASE_URL } from 'consts/urls.ts'
 
 type Props = { urlId: string | null }
 
-export const handler: Handlers<Props> = {
+export const handler: Handlers<Props, { user?: User }> = {
   GET(_req, ctx) {
     return ctx.render({ urlId: null })
   },
   async POST(req, ctx) {
     const formData = await req.formData()
     const urlToShorten = formData.get('url')
-    const urlId = await shortenUrl({ originalUrl: urlToShorten as string })
+    const urlId = await shortenUrl({
+      originalUrl: urlToShorten as string,
+      userId: ctx.state.user?.id,
+    })
     return ctx.render({ urlId })
   },
 }
