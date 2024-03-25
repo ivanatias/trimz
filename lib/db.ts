@@ -57,6 +57,21 @@ export async function shortenUrl(
   return urlId
 }
 
+export async function getUrlById(urlId: string) {
+  const index = await kv.get<string[]>(['urls', urlId])
+  if (index.value === null) return null
+  const url = await kv.get<StoredUrlData>(index.value)
+  return url.value
+}
+
+export async function updateUrl(data: StoredUrlData) {
+  const index = await kv.get<string[]>(['urls', data.urlId])
+  if (index.value === null) {
+    throw new Error(`URL with ID ${data.urlId} not found`)
+  }
+  await kv.set(index.value, data)
+}
+
 export async function getUserUrls(userId: string | number) {
   const iterator = kv.list<StoredUrlData>({ prefix: ['urls', userId] })
   const urls: StoredUrlData[] = []
