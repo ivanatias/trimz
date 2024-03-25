@@ -72,7 +72,7 @@ export async function updateUrl(data: StoredUrlData) {
   await kv.set(index.value, data)
 }
 
-export async function getUserUrls(userId: string | number) {
+export async function getUserUrls(userId: UserId) {
   const iterator = kv.list<StoredUrlData>({ prefix: ['urls', userId] })
   const urls: StoredUrlData[] = []
   for await (const { value } of iterator) {
