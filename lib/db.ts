@@ -14,7 +14,8 @@ export async function shortenUrl(
     username?: string
   },
 ) {
-  const stored = await kv.get<StoredUrlData>(['urls', username, originalUrl])
+  const urlsPrimaryKey = ['urls', username, originalUrl]
+  const stored = await kv.get<StoredUrlData>(urlsPrimaryKey)
 
   if (stored.value !== null) {
     console.log(`URL ${originalUrl} for user ${username} already exists.`)
@@ -22,8 +23,9 @@ export async function shortenUrl(
   }
 
   const urlId = nanoid(5)
-  const byOriginalUrlKey = ['urls', username, originalUrl]
-  const byIdKey = ['urls', username, urlId]
+  const byUserAndUrlIdKey = ['urls', username, urlId]
+  const byUrlIdKey = ['urls', urlId]
+
   const toCreate = {
     urlId,
     originalUrl,
@@ -33,8 +35,9 @@ export async function shortenUrl(
   const expireIn = username === 'guest' ? threeDaysMs : undefined
 
   const res = await kv.atomic()
-    .set(byOriginalUrlKey, toCreate, { expireIn })
-    .set(byIdKey, byOriginalUrlKey, { expireIn })
+    .set(urlsPrimaryKey, toCreate, { expireIn })
+    .set(byUserAndUrlIdKey, urlsPrimaryKey, { expireIn })
+    .set(byUrlIdKey, urlsPrimaryKey, { expireIn })
     .commit()
 
   if (!res.ok) {
