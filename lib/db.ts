@@ -8,22 +8,26 @@ export type StoredUrlData = {
   visits: number
 }
 
+type UserId = string | number
+
+const GUEST_USER_ID = 'guest'
+
 export async function shortenUrl(
-  { originalUrl, username = 'guest' }: {
+  { originalUrl, userId = GUEST_USER_ID }: {
     originalUrl: string
-    username?: string
+    userId?: UserId
   },
 ) {
-  const urlsPrimaryKey = ['urls', username, originalUrl]
+  const urlsPrimaryKey = ['urls', userId, originalUrl]
   const stored = await kv.get<StoredUrlData>(urlsPrimaryKey)
 
   if (stored.value !== null) {
-    console.log(`URL ${originalUrl} for user ${username} already exists.`)
+    console.log(`URL ${originalUrl} for user with ID ${userId} already exists.`)
     return stored.value.urlId
   }
 
   const urlId = nanoid(5)
-  const byUserAndUrlIdKey = ['urls', username, urlId]
+  const byUserAndUrlIdKey = ['urls', userId, urlId]
   const byUrlIdKey = ['urls', urlId]
 
   const toCreate = {
@@ -32,7 +36,7 @@ export async function shortenUrl(
     visits: 0,
   }
   const threeDaysMs = 3 * 24 * 60 * 60 * 1000
-  const expireIn = username === 'guest' ? threeDaysMs : undefined
+  const expireIn = userId === GUEST_USER_ID ? threeDaysMs : undefined
 
   const res = await kv.atomic()
     .set(urlsPrimaryKey, toCreate, { expireIn })
@@ -42,19 +46,19 @@ export async function shortenUrl(
 
   if (!res.ok) {
     throw new Error(
-      `Failed to shorten URL ${originalUrl} for user ${username}`,
+      `Failed to shorten URL ${originalUrl} for user with ID ${userId}`,
     )
   }
 
   console.info(
-    `URL ${originalUrl} for user ${username} did not exist. Created it.`,
+    `URL ${originalUrl} for user with ID ${userId} did not exist. Created it.`,
   )
 
   return urlId
 }
 
-export async function getUserUrls(username: string) {
-  const iterator = kv.list<StoredUrlData>({ prefix: ['urls', username] })
+export async function getUserUrls(userId: string | number) {
+  const iterator = kv.list<StoredUrlData>({ prefix: ['urls', userId] })
   const urls: StoredUrlData[] = []
   for await (const { value } of iterator) {
     if (!Array.isArray(value)) urls.push(value)
@@ -66,7 +70,7 @@ export type User = {
   login: string
   avatar_url: string
   name: string
-  id: number
+  id: UserId
   sessionId: string
 }
 
@@ -87,7 +91,7 @@ export async function createOrUpdateUser(user: User) {
 }
 
 export async function getUser(
-  options: { by: 'userId'; userId: number } | {
+  options: { by: 'userId'; userId: UserId } | {
     by: 'sessionId'
     sessionId: string
   },
