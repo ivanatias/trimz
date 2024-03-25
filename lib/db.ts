@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 
 const kv = await Deno.openKv()
 
-type StoredUrlData = {
+export type StoredUrlData = {
   urlId: string
   originalUrl: string
   visits: number
@@ -51,8 +51,8 @@ export async function shortenUrl(
 }
 
 export async function getUserUrls(username: string) {
-  const iterator = kv.list({ prefix: ['urls', username] })
-  const urls = []
+  const iterator = kv.list<StoredUrlData>({ prefix: ['urls', username] })
+  const urls: StoredUrlData[] = []
   for await (const { value } of iterator) {
     if (!Array.isArray(value)) urls.push(value)
   }
