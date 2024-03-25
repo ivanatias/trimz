@@ -1,4 +1,4 @@
-import { ChevronRight, DoorOut, Url } from 'components/icons.tsx'
+import { ChevronRight, DoorOut, Url } from 'common/ui/icons.tsx'
 
 const DROPDOWN_ITEMS = [
   {

@@ -1,5 +1,5 @@
 import { type PageProps } from '$fresh/server.ts'
-import { Navbar } from 'components/navbar.tsx'
+
 export default function App({ Component }: PageProps) {
   return (
     <html lang='en'>

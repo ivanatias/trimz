@@ -1,26 +1,29 @@
-import { ChevronRight } from 'components/icons.tsx'
-import { Facebook, GitHub, Google } from 'components/icons.tsx'
+import { ChevronRight } from 'common/ui/icons.tsx'
+import { Facebook, GitHub, Google } from 'common/ui/icons.tsx'
+
+const COMMON_CLASSES =
+  'text-white focus:ring-4 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center justify-center w-full'
 
 const PROVIDERS = [
   {
     name: 'GitHub',
     href: '/sign-in/github',
     className:
-      'text-white bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-4 focus:outline-none focus:ring-[#24292F]/50 font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center justify-center dark:focus:ring-gray-500 dark:hover:bg-[#050708]/30 w-full',
+      'bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-[#24292F]/50 dark:focus:ring-gray-500 dark:hover:bg-[#050708]/30',
     icon: <GitHub />,
   },
   {
     name: 'Google',
     href: '/sign-in/google',
     className:
-      'text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center justify-center dark:focus:ring-[#4285F4]/55 w-full',
+      'bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-[#4285F4]/50 dark:focus:ring-[#4285F4]/55',
     icon: <Google />,
   },
   {
     name: 'Facebook',
     href: '/sign-in/facebook',
     className:
-      'text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center justify-center dark:focus:ring-[#3b5998]/55 w-full',
+      'bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-[#3b5998]/50 dark:focus:ring-[#3b5998]/55',
     icon: <Facebook />,
   },
 ]
@@ -39,7 +42,7 @@ export function LoginDropdown() {
           <li key={name} class='w-full'>
             <a
               href={href}
-              class={className}
+              class={`${COMMON_CLASSES} ${className}`}
             >
               {icon}
               Sign in with {name}
