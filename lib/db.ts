@@ -18,15 +18,9 @@ export async function shortenUrl(
     userId?: UserId
   },
 ) {
-  const urlsPrimaryKey = ['urls', userId, originalUrl]
-  const stored = await kv.get<StoredUrlData>(urlsPrimaryKey)
+  const primaryKey = ['urls', userId, originalUrl]
 
-  if (stored.value !== null) {
-    console.log(`URL ${originalUrl} for user with ID ${userId} already exists.`)
-    return stored.value.urlId
-  }
-
-  const urlId = nanoid(5)
+  let urlId = nanoid(5)
   const byUserAndUrlIdKey = ['urls', userId, urlId]
   const byUrlIdKey = ['urls', urlId]
 
@@ -35,25 +29,29 @@ export async function shortenUrl(
     originalUrl,
     visits: 0,
   }
+
   const threeDaysMs = 3 * 24 * 60 * 60 * 1000
   const expireIn = userId === GUEST_USER_ID ? threeDaysMs : undefined
 
   const res = await kv.atomic()
-    .set(urlsPrimaryKey, toCreate, { expireIn })
-    .set(byUserAndUrlIdKey, urlsPrimaryKey, { expireIn })
-    .set(byUrlIdKey, urlsPrimaryKey, { expireIn })
+    .check({ key: primaryKey, versionstamp: null })
+    .set(primaryKey, toCreate, { expireIn })
+    .set(byUserAndUrlIdKey, primaryKey, { expireIn })
+    .set(byUrlIdKey, primaryKey, { expireIn })
     .commit()
 
-  if (!res.ok) {
-    throw new Error(
-      `Failed to shorten URL ${originalUrl} for user with ID ${userId}`,
-    )
+  const isNewUrl = res.ok
+
+  if (!isNewUrl) {
+    const storedUrl = await kv.get<StoredUrlData>(primaryKey)
+    urlId = storedUrl.value?.urlId as string
   }
 
-  console.info(
-    `URL ${originalUrl} for user with ID ${userId} did not exist. Created it.`,
-  )
+  const logMsg = isNewUrl
+    ? `URL ${originalUrl} for user with ID ${userId} did not exist. Created it.`
+    : `URL ${originalUrl} for user with ID ${userId} already exists.`
 
+  console.info(logMsg)
   return urlId
 }
 
@@ -69,6 +67,9 @@ export async function updateUrl(data: StoredUrlData) {
   if (index.value === null) {
     throw new Error(`URL with ID ${data.urlId} not found`)
   }
+  // should be atomic operation in a loop
+  // to avoid race conditions if the url data has been modified
+  // while the update is in progress
   await kv.set(index.value, data)
 }
 
