@@ -64,13 +64,19 @@ export async function getUrlById(urlId: string) {
 
 export async function updateUrl(data: StoredUrlData) {
   const index = await kv.get<string[]>(['urls', data.urlId])
+
   if (index.value === null) {
     throw new Error(`URL with ID ${data.urlId} not found`)
   }
-  // should be atomic operation in a loop
-  // to avoid race conditions if the url data has been modified
-  // while the update is in progress
-  await kv.set(index.value, data)
+
+  let res = { ok: false }
+  while (!res.ok) {
+    const url = await kv.get<StoredUrlData>(index.value)
+    res = await kv.atomic()
+      .check(url)
+      .set(index.value, data)
+      .commit()
+  }
 }
 
 export async function getUserUrls(userId: UserId) {
