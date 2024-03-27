@@ -35,7 +35,7 @@ export function UserDropdown(
           </div>
         </div>
       </summary>
-      <ul class='flex flex-col gap-2 absolute border border-slate-100 p-2 top-[52px] -left-[34px] lg:left-0 min-w-[200px] rounded-lg'>
+      <ul class='flex flex-col gap-2 absolute border border-slate-100 p-2 shadow-md top-[52px] z-20 bg-slate-50 -left-[34px] lg:left-0 min-w-[200px] rounded-lg'>
         {DROPDOWN_ITEMS.map(({ text, href, title, icon }) => (
           <li key={href}>
             <a

@@ -34,7 +34,7 @@ export function LoginDropdown() {
         </span>
         Sign in
       </summary>
-      <ul class='flex flex-col justify-center items-center gap-3 p-4 absolute border border-slate-100 top-[40px] w-[250px] -left-[140px] lg:-left-[70px] rounded-lg'>
+      <ul class='flex flex-col justify-center items-center gap-3 p-4 absolute z-20 bg-slate-50 shadow-md border border-slate-100 top-[40px] w-[250px] -left-[140px] lg:-left-[70px] rounded-lg'>
         {PROVIDERS.map(({ name, href, icon, className }) => (
           <li key={name} class='w-full'>
             <a
