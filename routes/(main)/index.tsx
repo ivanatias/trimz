@@ -14,7 +14,7 @@ export const handler: Handlers<Props, { user?: User }> = {
     const formData = await req.formData()
     const urlToShorten = formData.get('url')
     const urlId = await shortenUrl({
-      originalUrl: urlToShorten as string,
+      inputUrl: urlToShorten as string,
       userId: ctx.state.user?.id,
     })
     return ctx.render({ urlId })

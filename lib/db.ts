@@ -11,32 +11,41 @@ export type StoredUrlData = {
 type UserId = string | number
 
 const GUEST_USER_ID = 'guest'
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000
 
 export async function shortenUrl(
-  { originalUrl, userId = GUEST_USER_ID }: {
-    originalUrl: string
+  { inputUrl, userId = GUEST_USER_ID }: {
+    inputUrl: string
     userId?: UserId
   },
 ) {
-  const primaryKey = ['urls', userId, originalUrl]
+  const isGuest = userId === GUEST_USER_ID
 
-  let urlId = nanoid(5)
-  const byUserAndUrlIdKey = ['urls', userId, urlId]
+  if (!isGuest) {
+    const userUrls = await getUserUrls(userId)
+    const foundUrl = userUrls.find((url) => url.originalUrl === inputUrl)
+    if (foundUrl !== undefined) return foundUrl.urlId
+  }
+
+  const urlId = nanoid(5)
+
+  const primaryKey = isGuest
+    ? ['urls', inputUrl]
+    : ['urls', String(userId), urlId]
+
   const byUrlIdKey = ['urls', urlId]
 
   const toCreate = {
     urlId,
-    originalUrl,
+    originalUrl: inputUrl,
     visits: 0,
   }
 
-  const threeDaysMs = 3 * 24 * 60 * 60 * 1000
-  const expireIn = userId === GUEST_USER_ID ? threeDaysMs : undefined
+  const expireIn = isGuest ? THREE_DAYS_MS : undefined
 
   const res = await kv.atomic()
     .check({ key: primaryKey, versionstamp: null })
     .set(primaryKey, toCreate, { expireIn })
-    .set(byUserAndUrlIdKey, primaryKey, { expireIn })
     .set(byUrlIdKey, primaryKey, { expireIn })
     .commit()
 
@@ -44,14 +53,9 @@ export async function shortenUrl(
 
   if (!isNewUrl) {
     const storedUrl = await kv.get<StoredUrlData>(primaryKey)
-    urlId = storedUrl.value?.urlId as string
+    return storedUrl.value?.urlId as string
   }
 
-  const logMsg = isNewUrl
-    ? `URL ${originalUrl} for user with ID ${userId} did not exist. Created it.`
-    : `URL ${originalUrl} for user with ID ${userId} already exists.`
-
-  console.info(logMsg)
   return urlId
 }
 
@@ -80,7 +84,7 @@ export async function updateUrl(data: StoredUrlData) {
 }
 
 export async function getUserUrls(userId: UserId) {
-  const iterator = kv.list<StoredUrlData>({ prefix: ['urls', userId] })
+  const iterator = kv.list<StoredUrlData>({ prefix: ['urls', String(userId)] })
   const urls: StoredUrlData[] = []
   for await (const { value } of iterator) {
     if (!Array.isArray(value)) urls.push(value)
