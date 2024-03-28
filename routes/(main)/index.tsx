@@ -1,5 +1,6 @@
 import { type Handlers, type PageProps } from '$fresh/server.ts'
 import { ShortUrlForm } from 'links/short-url-form.tsx'
+import { BrandGradient } from 'common/ui/brand-gradient.tsx'
 import { NonFeaturedLinkCard } from 'links/link-card.tsx'
 import { shortenUrl, type User } from 'lib/db.ts'
 
@@ -26,9 +27,9 @@ export default function Home({ data }: PageProps<Props>) {
     <section class='grid place-content-center h-[calc(100vh-40px)]'>
       <h1 class='text-4xl text-center text-pretty font-semibold mb-6 tracking-wide text-black'>
         Trim your{' '}
-        <span class='bg-gradient-to-r from-orange-300 via-rose-400 to-emerald-300 bg-clip-text text-transparent'>
-          URLs
-        </span>{' '}
+        <BrandGradient version='darker'>
+          URLs{' '}
+        </BrandGradient>
         easily
       </h1>
       <div class='flex flex-col items-center justify-center bg-slate-50 p-6 rounded-lg shadow-md'>

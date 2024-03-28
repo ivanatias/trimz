@@ -1,6 +1,7 @@
 import { defineLayout } from '$fresh/server.ts'
 import { UserDropdown } from 'auth/user-dropdown.tsx'
 import { LoginDropdown } from 'auth/login-dropdown.tsx'
+import { BrandGradient } from 'common/ui/brand-gradient.tsx'
 import { Heart } from 'common/ui/icons.tsx'
 import { type User } from 'lib/db.ts'
 
@@ -20,7 +21,7 @@ export default defineLayout<{ sessionId?: string; user?: User }>(
 
 function Footer() {
   return (
-    <footer class='flex justify-center fixed bottom-3 w-full'>
+    <footer class='flex justify-center w-full py-3 fixed bottom-0 z-20 bg-white'>
       <p class='text-sm text-center text-gray-600 flex items-center gap-1'>
         Made with{' '}
         <span class='text-rose-500'>
@@ -44,15 +45,17 @@ function Footer() {
 function Navbar({ user }: { user?: User }) {
   const isLoggedIn = user !== undefined
   return (
-    <header class='flex justify-center pt-5'>
-      <nav class='fixed w-full flex items-center justify-between max-w-4xl px-5'>
-        <a
-          class='text-5xl italic bg-gradient-to-r from-orange-300 via-rose-400 to-emerald-300 bg-clip-text text-transparent'
+    <header class='flex justify-center'>
+      <nav class='fixed w-full flex items-center justify-between max-w-4xl px-5 py-4 z-20 bg-white'>
+        <BrandGradient
+          element='a'
+          className='text-5xl italic'
           href='/'
           title='Go to homepage'
+          version='darker'
         >
-          trimz.
-        </a>
+          trimz
+        </BrandGradient>
         {isLoggedIn
           ? (
             <UserDropdown

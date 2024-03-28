@@ -1,10 +1,14 @@
-import { Clipboard } from 'common/ui/icons.tsx'
+import { BrandGradient } from 'common/ui/brand-gradient.tsx'
+import { Clipboard, Trash } from 'common/ui/icons.tsx'
 import { BASE_URL } from 'links/consts.ts'
 import { type StoredUrlData } from 'lib/db.ts'
 
 export function NonFeaturedLinkCard({ urlId }: { urlId: string }) {
   return (
-    <div class='flex items-center justify-between p-4 rounded-md bg-gradient-to-r from-orange-200 via-rose-200 to-emerald-100'>
+    <BrandGradient
+      element='div'
+      className='flex items-center justify-between p-4 rounded-md'
+    >
       <p class='text-sm text-gray-900 mb-1'>
         {BASE_URL}/{urlId}
       </p>
@@ -14,15 +18,38 @@ export function NonFeaturedLinkCard({ urlId }: { urlId: string }) {
       >
         <Clipboard />
       </button>
-    </div>
+    </BrandGradient>
   )
 }
 
 export function FeaturedLinkCard({ url }: { url: StoredUrlData }) {
   return (
-    <div class='flex flex-col gap-2 p-3 bg-white shadow-sm rounded-md'>
+    <div class='flex flex-col gap-2 py-3 px-5 bg-white shadow-sm rounded-md'>
       <div class='flex items-center justify-between'>
-        <div class='flex items-center gap-3'>
+        <div class='flex flex-col gap-3 w-full'>
+          <div class='flex items-center justify-between'>
+            <div class='flex items-center gap-1'>
+              <button
+                aria-label='Copy URL to clipboard'
+                class='bg-slate-50 hover:bg-slate-100 transition-colors rounded-md p-2'
+              >
+                <Clipboard />
+              </button>
+              <form method='post'>
+                <input hidden name='urlId' value={url.urlId} />
+                <button
+                  aria-label='Delete URL'
+                  class='bg-slate-50 hover:bg-slate-100 transition-colors rounded-md p-2'
+                  type='submit'
+                >
+                  <Trash />
+                </button>
+              </form>
+            </div>
+            <span class='text-xs lg:text-sm'>
+              Visited {url.visits} times
+            </span>
+          </div>
           <a
             class='text-sm lg:text-base font-semibold text-emerald-700 hover:underline'
             href={`${BASE_URL}/${url.urlId}`}
@@ -32,16 +59,7 @@ export function FeaturedLinkCard({ url }: { url: StoredUrlData }) {
           >
             {BASE_URL}/{url.urlId}
           </a>
-          <button
-            aria-label='Copy URL to clipboard'
-            class='bg-slate-50 hover:bg-slate-100 transition-colors rounded-md p-2'
-          >
-            <Clipboard />
-          </button>
         </div>
-        <span class='text-xs lg:text-sm'>
-          Visited {url.visits} times
-        </span>
       </div>
       <div class='flex items-center gap-2 text-xs lg:text-sm'>
         <span>3h ago</span>
